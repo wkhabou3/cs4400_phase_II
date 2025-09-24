@@ -2,7 +2,7 @@ create table person (
 	ssn decimal(10, 0) not null,
     fname char not null,
     lname char not null,
-    bdate decimal(8, 0) not null,
+    bdate datetime not null,
     addr char not null,
     primary key (ssn)
 );
@@ -19,7 +19,7 @@ create table staff (
 	staffID int not null,
 	ssn decimal(10, 0) not null,
     salary int not null,
-    hireDate decimal(8, 0) not null,
+    hireDate datetime not null,
     primary key (staffID),
     foreign key (ssn) references person(ssn)
 );
@@ -34,7 +34,7 @@ create table doctor (
 
 create table nurse (
 	nurseID int not null,
-    regExpiration decimal(8, 0) not null,
+    regExpiration datetime not null,
     shiftType char not null,
     primary key (nurseID),
     foreign key (nurseID) references staff(staffID)
