@@ -1,8 +1,9 @@
+drop database if exists hospital;
 create database hospital;
 use hospital;
 
 create table person (
-	ssn decimal(10, 0) not null,
+	ssn decimal(9, 0) not null,
     fname varchar(100) not null,
     lname varchar(100) not null,
     bdate date,
@@ -11,7 +12,7 @@ create table person (
 );
 
 create table patient (
-	ssn decimal(10, 0) not null,
+	ssn decimal(9, 0) not null,
     contact decimal(10, 0), 
     funds int,
     check (funds >= 0),
@@ -21,33 +22,43 @@ create table patient (
 );
 
 create table staff (
+	staffSSN decimal(9, 0) not null,
 	staffID int not null,
-	ssn decimal(10, 0) not null,
     salary int not null,
     hireDate date not null,
     check (staffID > 0 and salary >= 0),
-    primary key (staffID),
-    foreign key (ssn) references person(ssn)
+    primary key (staffSSN),
+    unique (staffId),
+    foreign key (staffSSN) references person(ssn)
     on delete cascade
 );
 
 create table doctor (
-	licenseNumber int not null,
-    id int not null,
-    experience int not null,
-    check (licenseNumber > 0 and id > 0 and experience >= 0),
-    primary key (licenseNumber),
-    foreign key (id) references staff(staffID)
+	staffSSN decimal(9, 0) not null,
+	licenseNumber int,
+    staffId int,
+    yearsExperience int,
+    check (licenseNumber > 0 and staffId > 0 and yearsExperience >= 0),
+    primary key (staffSSN),
+    unique (licenseNumber),
+    unique (staffID),
+    foreign key (staffSSN) references person(ssn)
+    on delete cascade,
+    foreign key (staffId) references staff(staffId)
     on delete cascade
 );
 
 create table nurse (
-	nurseID int not null,
+	staffSSN decimal(9, 0) not null,
+	staffId int,
     regExpiration date not null,
-    shiftType varchar(100) not null,
-    check (nurseID > 0),
-    primary key (nurseID),
-    foreign key (nurseID) references staff(staffID)
+    shiftType varchar(100),
+    check (staffID > 0),
+    primary key (staffSSN),
+    unique(staffId),
+    foreign key (staffSSN) references person(ssn)
+    on delete cascade,
+    foreign key (staffId) references staff(staffId)
     on delete cascade
 );
 
@@ -102,3 +113,13 @@ create table assigned (
     foreign key (rnumber) references room(rnumber)
     on delete cascade
 );
+
+insert into person (ssn, fname, lname, bdate, addr) values
+(909101111, 'Maria', 'Alvarez', '1987-03-22', '81 Peachtree Pl NE, Atlanta, GA 30309', 4045551010, 1800),
+(323445555, 'Marcus', 'Lee', '1979-12-11', '1420 Oak Terrace, Decatur, GA 30030'),
+(123456789, 'Christopher', 'Davis', null, null);
+
+insert into patient (ssn, contact, funds) values 
+(909101111, 4045551010, 1800),
+(323445555, 4045552020, 2400),
+(123456789, null, null)
