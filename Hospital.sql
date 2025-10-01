@@ -50,3 +50,55 @@ create table nurse (
     foreign key (nurseID) references staff(staffID)
     on delete cascade
 );
+
+create table appointment (
+	patientID decimal(10, 0) not null,
+    apptDate date not null,
+    apptTime time not null,
+    cost int not null,
+    check (cost >= 0),
+    primary key (patientID, apptDate, apptTime),
+    foreign key (patientID) references patient(ssn)
+    on delete cascade
+);
+
+create table symptom (
+	patientID decimal(10, 0) not null,
+    apptDate date not null,
+    apptTime time not null,
+    symptomType varchar(100) not null,
+    numDays int not null,
+    check (numDays >= 0),
+    primary key (patientID, apptdate, appttime),
+    foreign key (patientID, apptdate, appttime) references appointment(patientID, apptdate, appttime)
+    on delete cascade
+);
+
+create table scheduledFor (
+	doctor int not null,
+    patientID decimal(10, 0) not null,
+    apptDate date not null,
+    apptTime time not null,
+    primary key (doctor, patientID, apptdate, appttime),
+    foreign key (doctor) references doctor(licenseNumber),
+    foreign key (patientID, apptdate, appttime) references appointment(patientID, apptdate, appttime)
+    on delete cascade
+);
+
+create table worksIn (
+	staffID int not null,
+    deptID int not null,
+    primary key (staffID, deptID),
+    foreign key (staffID) references staff(staffID),
+    foreign key (deptID) references department(deptID)
+    on delete cascade
+);
+
+create table assigned (
+	nurseID int not null,
+    rnumber int not null,
+    primary key (nurseID, rnumber),
+    foreign key (nurseID) references nurse(nurseID),
+    foreign key (rnumber) references room(rnumber)
+    on delete cascade
+);
