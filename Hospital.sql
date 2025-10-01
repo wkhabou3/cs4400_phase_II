@@ -5,15 +5,15 @@ create table person (
 	ssn decimal(10, 0) not null,
     fname varchar(100) not null,
     lname varchar(100) not null,
-    bdate date not null,
-    addr varchar(100) not null,
+    bdate date,
+    addr varchar(100),
     primary key (ssn)
 );
 
 create table patient (
 	ssn decimal(10, 0) not null,
-    contact decimal(10, 0) not null, 
-    funds int not null,
+    contact decimal(10, 0), 
+    funds int,
     check (funds >= 0),
     primary key (ssn),
     foreign key (ssn) references person(ssn)
