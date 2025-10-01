@@ -63,54 +63,65 @@ create table nurse (
 );
 
 create table appointment (
-	patientID decimal(10, 0) not null,
+	patientSSN decimal(10, 0) not null,
     apptDate date not null,
     apptTime time not null,
     cost int not null,
     check (cost >= 0),
-    primary key (patientID, apptDate, apptTime),
-    foreign key (patientID) references patient(ssn)
+    primary key (patientSSN, apptDate, apptTime),
+    foreign key (patientSSN) references patient(ssn)
+    on update restrict
     on delete cascade
 );
 
 create table symptom (
-	patientID decimal(10, 0) not null,
+	patientSSN decimal(9, 0) not null,
     apptDate date not null,
     apptTime time not null,
     symptomType varchar(100) not null,
     numDays int not null,
     check (numDays >= 0),
-    primary key (patientID, apptdate, appttime),
-    foreign key (patientID, apptdate, appttime) references appointment(patientID, apptdate, appttime)
+    primary key (patientSSN, apptdate, appttime),
+    foreign key (patientSSN, apptdate, appttime) references appointment(patientSSN, apptdate, appttime)
+    on update cascade
     on delete cascade
 );
 
 create table scheduledFor (
-	doctor int not null,
-    patientID decimal(10, 0) not null,
+	doctorSSN decimal(9, 0) not null,
+    patientSSN decimal(9, 0) not null,
     apptDate date not null,
     apptTime time not null,
-    primary key (doctor, patientID, apptdate, appttime),
-    foreign key (doctor) references doctor(licenseNumber),
-    foreign key (patientID, apptdate, appttime) references appointment(patientID, apptdate, appttime)
+    primary key (doctorSSN, patientSSN, apptdate, appttime),
+    foreign key (doctorSSN) references doctor(staffSSN)
+    on update restrict
+    on delete cascade,
+    foreign key (patientSSN, apptdate, appttime) references appointment(patientSSN, apptdate, appttime)
+    on update cascade
     on delete cascade
 );
 
 create table worksIn (
-	staffID int not null,
+	staffSSN decimal(9, 0) not null,
     deptID int not null,
-    primary key (staffID, deptID),
-    foreign key (staffID) references staff(staffID),
+    primary key (staffSSN, deptID),
+    foreign key (staffSSN) references staff(staffSSN)
+    on update restrict
+    on delete cascade,
     foreign key (deptID) references department(deptID)
+    on update restrict
     on delete cascade
 );
 
 create table assigned (
-	nurseID int not null,
+	nurseSSN decimal(9, 0) not null,
     rnumber int not null,
-    primary key (nurseID, rnumber),
-    foreign key (nurseID) references nurse(nurseID),
+    primary key (nurseSSN, rnumber),
+    foreign key (nurseSSN) references nurse(staffSSN)
+    on update restrict
+    on delete cascade,
     foreign key (rnumber) references room(rnumber)
+    on update restrict
     on delete cascade
 );
 
